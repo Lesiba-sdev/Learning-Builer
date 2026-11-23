@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import ActivityRenderer from "../../components/ActivityRenderer";
 import type { GeneratedActivity } from "../../lib/schemas";
 import { createBrowserSupabase } from "../../lib/supabase";
+import ActivityEditor, { activityProblem } from "../../components/ActivityEditor";
 
 const TYPES = [
   { value: "multiple-choice", label: "Multiple choice" },
@@ -75,6 +76,7 @@ export default function NewActivityPage() {
   const [chat, setChat] = useState<ChatMessage[]>([]);
   const [changeText, setChangeText] = useState("");
   const [refining, setRefining] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -161,8 +163,13 @@ export default function NewActivityPage() {
     setSaved(false);
   }
 
-  async function save() {
+    async function save() {
     if (!activity) return;
+    const problem = activityProblem(activity);
+    if (problem) {
+      setActionError(problem);
+      return;
+    }
     setSaving(true);
     setActionError(null);
     setNeedsLogin(false);
@@ -352,6 +359,28 @@ export default function NewActivityPage() {
                   <p className="mt-2 text-sm text-gray-500">
                     Updating your activity… this can take up to a minute.
                   </p>
+                )}
+              </section>
+
+                            <section className="mt-6">
+                <button
+                  onClick={() => setEditing((e) => !e)}
+                  aria-expanded={editing}
+                  className="min-h-[44px] rounded-xl border-2 border-gray-300 bg-white px-5 text-gray-800"
+                >
+                  {editing ? "Done editing" : "Edit directly"}
+                </button>
+                {editing && (
+                  <div className="mt-3 rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                    <ActivityEditor
+                      activity={activity}
+                      onChange={(next) => {
+                        setActivity(next);
+                        setVersion((v) => v + 1);
+                        setSaved(false);
+                      }}
+                    />
+                  </div>
                 )}
               </section>
 
