@@ -13,7 +13,11 @@ function newId(prefix: string) {
 function scanText(v: unknown, key = ""): string | null {
   if (typeof v === "string") {
     if (v.length > 400) return "Some text is longer than 400 characters.";
-    if (!v.trim() && key !== "explanation" && key !== "instructions") {
+        if (
+      !v.replace(/[\s.,;:!?'"()\-_]/g, "") &&
+      key !== "explanation" &&
+      key !== "instructions"
+    ) {
       return "Please fill in every empty box.";
     }
     return null;

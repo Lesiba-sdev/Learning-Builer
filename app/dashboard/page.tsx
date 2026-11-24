@@ -181,7 +181,13 @@ export default function DashboardPage() {
                     </Link>
                   </>
                 )}
-
+                
+                <Link
+                  href={`/edit/${row.id}`}
+                  className="inline-flex min-h-[44px] items-center rounded-xl border-2 border-gray-300 px-4 text-gray-800"
+                >
+                  Edit
+                </Link>
                 <button
                   onClick={() => remove(row)}
                   className="ml-auto min-h-[44px] rounded-xl border-2 border-red-300 px-4 text-red-700"
